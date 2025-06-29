@@ -7,28 +7,23 @@ O rastreio vai ser no site da AliExpress Selection Standard
 
 """
 
+from Track import Track
+from Email import Email
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-import time
-from selenium.webdriver.support.wait import WebDriverWait
 
-driver = webdriver.Chrome()
-driver.get('https://www.ordertracker.com/couriers/aliexpress')
-time.sleep(5)
+if __name__ == '__main__':
+    driver = webdriver.Chrome()
 
-wait = WebDriverWait(driver, 15)
-searchInput = driver.find_element(By.TAG_NAME, 'input')
+    email_from = ''
+    email_to = ''
+    password = ''
 
-searchInput.send_keys('CNBR00077223717')
-time.sleep(1)
-searchInput.submit()
+    try:
+        track = Track(driver)
+        package_status = track.track_package('CNBR00077223717')
 
-time.sleep(10)
-getStatus = driver.find_element(By.CLASS_NAME, 'status-content')
+        email = Email(email_from, password, email_to)
+        email.send_email(package_status.text)
 
-print(getStatus.text)
-
-
-
-
+    except Exception as e:
+        print(f'Error: {e}')
